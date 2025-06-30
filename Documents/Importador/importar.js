@@ -3,7 +3,7 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const admin = require('firebase-admin');
 
-// 🔐 Cargar credenciales de Firebase
+// Cargar credenciales de Firebase
 const serviceAccount = require('./serviceAccountKey.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -12,7 +12,7 @@ const db = admin.firestore();
 
 const XML_URL = "https://try.com.ar/wp-content/uploads/woo-feed/google/xml/hardgamers.xml";
 
-// 🔎 Palabras clave por categoría
+//  Palabras clave por categoría
 const categoriaKeywords = {
   procesador: ["procesadores"],
   motherboard: ["motherboards"],
@@ -27,7 +27,7 @@ const categoriaKeywords = {
   fuente: ["fuentes", "fuente de poder", "fuente de alimentación", "psu"]
 };
 
-// 🧠 Normaliza categoría + marca
+//  Normaliza categoría + marca
 function normalizarCategoria(pt, titulo) {
   pt = pt.toLowerCase();
   const lowerTitulo = titulo.toLowerCase();
@@ -51,7 +51,7 @@ function normalizarCategoria(pt, titulo) {
   return null;
 }
 
-// 🚀 Importador principal
+//  Importador principal
 async function importarProductos() {
   try {
     const res = await axios.get(XML_URL);
@@ -76,7 +76,7 @@ async function importarProductos() {
       const categoria = normalizarCategoria(pt, titulo);
       if (!categoria) continue;
 
-      // 🟢 Lógica de precios: sale_price > price
+      //  Lógica de precios: sale_price > price
       let precioStr = item["g:sale_price"] || item["g:price"];
       if (!precioStr || precioStr.trim() === "") continue;
 
@@ -105,13 +105,13 @@ async function importarProductos() {
       }
 
       if (categoria.includes("motherboard") || categoria.includes("procesador")) {
-        console.log(`🟢 ${categoria.toUpperCase()} → $${precio} → ${titulo}`);
+        console.log(` ${categoria.toUpperCase()} → $${precio} → ${titulo}`);
       }
     }
 
-    console.log(`✅ Finalizado. Nuevos: ${nuevos}, Actualizados: ${actualizados}`);
+    console.log(`Finalizado. Nuevos: ${nuevos}, Actualizados: ${actualizados}`);
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error(" Error:", err.message);
   }
 }
 
